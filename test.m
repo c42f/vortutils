@@ -38,8 +38,11 @@ for kk = 1:(vorticity.siz(3)-1)
 				% emphasize any which go all the way through the middle of the cloud.
 				plot3(facePos(:,1), facePos(:,2), facePos(:,3), 'k.-');
 			elseif(all(vortTrace(1,:) == vortTrace(end,:)))
+				% These are vortex loops - it looks nice to visualize these
+				% differently too.
 				plot3(facePos(:,1), facePos(:,2), facePos(:,3), 'r-');
 			else
+				% Vortex lines of other types...
 				plot3(facePos(:,1), facePos(:,2), facePos(:,3), '-');
 			end
 
