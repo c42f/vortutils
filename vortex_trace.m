@@ -1,4 +1,6 @@
 function lineIndices = vortex_trace(vorticity, startPos);
+% lineIndices = vortex_trace(vorticity, startPos);
+%
 % Trace a vortex line in the given vorticity field.  Conceptually, each cubic
 % cell in the field is a six-element array, containing the vorticity on the
 % faces of the cell.  This is a redundent scheme but makes traversing the field
@@ -7,7 +9,9 @@ function lineIndices = vortex_trace(vorticity, startPos);
 % Input:
 %   vorticity - An array containing the vorticity stored redundently in cell volumes
 %   startPos - Starting index into the vorticity array.
-%   startDirection - Starting direction for the trace.
+%
+% Output:
+%   lineIndices - Indices of cells through which the line passes.
 
 % Find direction to move in.
 startCellVorticity = vorticity(startPos(1),startPos(2),startPos(3),:);
@@ -19,13 +23,11 @@ if(numel(faceIdxIdx) == 0)
 end
 
 forwardTrace = trace_direction(vorticity, startPos, faceIdxIdx(1));
-if(all(forwardTrace(1,:) == forwardTrace(end,:)))
+if(all(forwardTrace(1,:) == forwardTrace(end,:)) && size(forwardTrace,1) ~= 1)
 	% loop found - don't need to trace backward along the vortex line...
-	disp('loop found');
-	traceLen = size(forwardTrace,1);
-	smoothTrace = csaps(1:traceLen, forwardTrace.', 0.2, 1:traceLen).';
-	plot3(smoothTrace(:,1), smoothTrace(:,2), smoothTrace(:,3), 'r.', 'linewidth', 1);
 	backwardTrace = [];
+	% debug - Highlight the loop.
+	% plot3(forwardTrace(:,1), forwardTrace(:,2), forwardTrace(:,3), 'r.', 'linewidth', 1);
 else
 	backwardTrace = trace_direction(vorticity, startPos, faceIdxIdx(2));
 end
@@ -78,6 +80,10 @@ function lineIndices = trace_direction(vorticity, startPos, faceIdx)
 		currIncomingIdx = incomingFromOutgoing(faceIdx);
 		% Get indices to all faces of the current cell holding nonzero values.
 		faceVortIdx = find(vorticity(currPos(1),currPos(2),currPos(3),:) ~= 0);
+		if(numel(faceVortIdx) ~= 2)
+			error('Vortex line ended unexpectedly!');
+			break;
+		end
 		% Get the index of the outgoing face.
 		faceIdx = faceVortIdx(faceVortIdx ~= currIncomingIdx);
 
