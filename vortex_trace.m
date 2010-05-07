@@ -1,13 +1,14 @@
-function lineIndices = vortex_trace(vorticity, startPos);
+function [lineIndices] = vortex_trace(vorticity, startPos);
 % lineIndices = vortex_trace(vorticity, startPos);
 %
-% Trace a vortex line in the given vorticity field.  Conceptually, each cubic
-% cell in the field is a six-element array, containing the vorticity on the
-% faces of the cell.  This is a redundent scheme but makes traversing the field
-% much faster.
+% Trace a vortex line in the given vorticity field.  Each cubic cell in the
+% vorticity field is represented by a six-element array, containing the
+% vorticity on the faces of the cell.
+%
+% TODO: This function doesn't deal with periodic boundaries yet.
 %
 % Input:
-%   vorticity - An array containing the vorticity stored redundently in cell volumes
+%   vorticity - An array containing the vorticity stored in cell volumes
 %   startPos - Starting index into the vorticity array.
 %
 % Output:
@@ -22,6 +23,7 @@ if(numel(faceIdxIdx) == 0)
 	return;
 end
 
+handedness = startCellVorticity(faceIdxIdx(1));
 forwardTrace = trace_direction(vorticity, startPos, faceIdxIdx(1));
 if(all(forwardTrace(1,:) == forwardTrace(end,:)) && size(forwardTrace,1) ~= 1)
 	% loop found - don't need to trace backward along the vortex line...
@@ -32,6 +34,12 @@ else
 	backwardTrace = trace_direction(vorticity, startPos, faceIdxIdx(2));
 end
 lineIndices = [flipud(backwardTrace(2:end,:)); forwardTrace];
+
+% Ensure that the handedness of the rotation as we traverse the vortex line is
+% always the same by flipping any lines traced with negative handednesses.
+if handedness < 0
+    lineIndices = flipud(lineIndices);
+end
 
 end
 
@@ -81,7 +89,7 @@ function lineIndices = trace_direction(vorticity, startPos, faceIdx)
 		% Get indices to all faces of the current cell holding nonzero values.
 		faceVortIdx = find(vorticity(currPos(1),currPos(2),currPos(3),:) ~= 0);
 		if(numel(faceVortIdx) ~= 2)
-			error('Vortex line ended unexpectedly!');
+			warning('Vortex line ended unexpectedly!');
 			break;
 		end
 		% Get the index of the outgoing face.
