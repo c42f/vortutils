@@ -34,8 +34,23 @@ if nargout > 1
     winding = vorticity(vorticity~=0);
 end
 
-% Compute least squares estimator for the linear function coefficints on a
-% plaquette.
+% Compute least squares estimator for the linear function coefficients on a
+% plaquette.  Suppose the real part of psi on a plaquette containing a vortex
+% is
+%
+%   [r1 r2;
+%    r3 r4]
+%
+% We want to fit a plane (a*x + b*y + c) to this such that
+%
+%   r1 = a*0 + b*0 + c*1
+%   r2 = a*1 + b*0 + c*1
+%   r3 = a*0 + b*1 + c*1
+%   r4 = a*1 + b*1 + c*1
+%
+% In matrix form, that would be L * [a;b;c] = [r1;r2;r3;r4], which is the
+% origin of the mysterious looking matrix below.
+%
 L = [0 0 1;
      1 0 1;
      0 1 1;
