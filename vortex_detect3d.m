@@ -29,13 +29,13 @@ zfVal = zeros(Nx-1,Ny-1,Nz);
 phase = angle(psi);
 
 for ii = 1:Nx
-	xfVal(ii,:,:) = phase_winding2d(phase(ii,:,:));
+    xfVal(ii,:,:) = phase_winding2d(phase(ii,:,:));
 end
 for ii = 1:Ny
-	yfVal(:,ii,:) = phase_winding2d(phase(:,ii,:));
+    yfVal(:,ii,:) = phase_winding2d(phase(:,ii,:));
 end
 for ii = 1:Nz
-	zfVal(:,:,ii) = phase_winding2d(phase(:,:,ii));
+    zfVal(:,:,ii) = phase_winding2d(phase(:,:,ii));
 end
 
 vorticity = struct('siz', [Nx, Ny, Nz], 'xfVal', xfVal, 'yfVal', yfVal, 'zfVal', zfVal);

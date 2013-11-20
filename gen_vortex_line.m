@@ -20,7 +20,7 @@ vortDirec = vortDirec./norm(vortDirec);
 
 coords = struct( 'x', linspace(0,1,fieldDims(1)), ...
                  'y', linspace(0,1,fieldDims(2)), ...
-				 'z', linspace(0,1,fieldDims(3)) );
+                 'z', linspace(0,1,fieldDims(3)) );
 
 [xx,yy,zz] = ndgrid(coords.x, coords.y, coords.z);
 

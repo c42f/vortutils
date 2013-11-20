@@ -13,8 +13,8 @@ function smoothedLine = smooth_vort_line(line)
 
 lineLen = size(line,1);
 if(lineLen > 1)
-	% Construct a smooth spline representation of the vortex line
-	smoothedLine = csaps(1:lineLen, line.', 0.2, 1:lineLen).';
+    % Construct a smooth spline representation of the vortex line
+    smoothedLine = csaps(1:lineLen, line.', 0.2, 1:lineLen).';
 else
-	smoothedLine = line;
+    smoothedLine = line;
 end
