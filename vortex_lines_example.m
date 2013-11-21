@@ -1,3 +1,15 @@
+% Create some sample fields to bench the vortex detection algorithm
+
+% disp('generating input field with simple vortex line...');
+% L = 20.0;
+% N = 20;
+% dx = L/N;
+% x = -L/2:dx:L/2-dx;
+% [X,Y,Z] = meshgrid(x,x,x);
+% a = 4;
+% psi = (X+1i*Y).*exp(-(X.^2 + Y.^2)/a^2) - (X-1i*Z).*exp(-((X-3).^2 + (Z+7).^2)/a^2);
+% psi = (X+1i*Y).*exp(-(X.^2 + Y.^2)/a^2);
+% psi(:,:,10:end) = exp(-(X(:,:,10:end).^2 + Y(:,:,10:end).^2)/a^2);
 
 % Generate a random complex field using cubic interpolation of random values.
 % This is very likely to have some vortices threading through it.
@@ -14,35 +26,14 @@ x2 = (0:N2-1)/N2;
 [x,y,z] = meshgrid(x2,x2,x2);
 psi = interp3(x1,x1,x1, psiIn, x,y,z, 'cubic');
 
+% we assume periodic boundary conditions for this examples
+periodicBoundary = 1;
+
 % Detect the resutling vortices, and trace vortex lines.
 disp('detecting vortices...');
-vorticity = vortex_detect3d(psi);
+vorticity = vortex_detect3d(psi,periodicBoundary);
 disp('tracing vortex lines...');
-vortLines = vortex_trace_all(vorticity);
-
+vortLines = vortex_trace_all(vorticity,0);
 
 % Plot all vortex lines
-clf;
-hold on;
-
-for ii = 1:length(vortLines)
-    vline = vortLines{ii};
-    % Plot the vortex line.  facePos is the actual positions of the vortices
-    % on the faces of the 3D mesh; half way between the cell centres.
-    facePos = 0.5*(vline(1:end-1,:) + vline(2:end,:));
-    if(all(vline(1,:) == vline(end,:)))
-        % Visualize vortex loops in blue.
-        plot3(facePos(:,1), facePos(:,2), facePos(:,3), '-');
-    else
-        % Visualize vortex lines in red
-        plot3(facePos(:,1), facePos(:,2), facePos(:,3), 'r-');
-    end
-    % Construct a smooth spline representation of the vortex line and plot
-%    smoothed = smooth_vort_line(facePos);
-%    plot3(smoothed(:,1), smoothed(:,2), smoothed(:,3), 'k-', 'linewidth', 1);
-end
-
-set(gca(), 'projection','perspective');
-set(gca(), 'box', 'on');
-%axis('equal');
-
+plotVortexLines(vortLines);
