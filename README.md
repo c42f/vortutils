@@ -5,9 +5,6 @@ This repo contains some utilities for finding vortices in a complex-valued
 field sampled on a regular grid in 2D or 3D.  This is quite straightforward over
 a 2D grid, but tracing vortex lines in 3D is a bit more involved.
 
-This code was written at The University of Queensland during my PhD; my thesis
-rests in peace here: http://arxiv.org/abs/1302.0470
-
 The functions have resonably complete documentation comments, but here's an
 overview of the more interesting functions to get you started:
 
@@ -43,3 +40,7 @@ License
 vortutils is licensed under the 2-clause BSD license: this basically means you
 can do what you want with it, provided you keep the original attribution intact
 (see LICENSE.txt for details)
+
+The code was originally written at The University of Queensland during Chris
+Foster's PhD (thesis resting in peace here: http://arxiv.org/abs/1302.0470).
+
